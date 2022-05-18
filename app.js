@@ -6,6 +6,7 @@ const exphbs = require('express-handlebars')
 const { redirect } = require('express/lib/response')
 const mongoose = require('mongoose')
 const db = mongoose.connection
+const methodOverride = require('method-override')
 
 const Restaurant = require('./models/Restaurant')
 const bodyParser = require('body-parser')
@@ -14,6 +15,7 @@ const urlencoded = require('body-parser/lib/types/urlencoded')
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
 app.use(express.static('public'))
+app.use(methodOverride('_method'))
 
 app.use(bodyParser.urlencoded({ extended: true }))
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -74,40 +76,51 @@ app.get('/restaurants/:id/edit', (req, res) => {
 })
 
 
-app.post('/restaurants/:id/edit', (req, res) => {
+// app.put('/restaurants/:id', (req, res) => {
+//   const id = req.params.id
+//   const { name, name_en, category, image, location, phone, google_map, rating, description } = req.body
+//   // console.log('body', body)
+//   return Restaurant.findById(id)
+//     .then((restaurant) => {
+//       restaurant.name = name
+//       restaurant.name_en = name_en
+//       restaurant.category = category
+//       restaurant.image = image
+//       restaurant.location = location
+//       restaurant.phone = phone
+//       restaurant.google_map = google_map
+//       restaurant.rating = rating
+//       restaurant.description = description
+//       // console.log('restaurantbody', restaurant.body)
+//       return restaurant.save()
+//     })
+//     .then(() => res.redirect(`/restaurants/${id}`))
+//     .catch(error => console.log(error))
+// })
+
+app.put('/restaurants/:id', (req, res) => {
   const id = req.params.id
-  const body = req.body
+  const { name, name_en, category, image, location, phone, google_map, rating, description } = req.body
   // console.log('body', body)
-  return Restaurant.findById(id)
-    .then((restaurant) => {
-      restaurant.name = body.name
-      restaurant.name_en = body.name_en
-      restaurant.category = body.category
-      restaurant.image = body.image
-      restaurant.location = body.location
-      restaurant.phone = body.phone
-      restaurant.google_map = body.google_map
-      restaurant.rating = body.rating
-      restaurant.description = body.description
-      // console.log('restaurantbody', restaurant.body)
-      return restaurant.save()
+  return Restaurant.findByIdAndUpdate(id, req.body)
+    .then(() => {
+      res.redirect(`/restaurants/${id}`)
     })
-    .then(() => res.redirect(`/restaurants/${id}`))
-    .catch(error => console.log(error))
+    .catch(error => console.error(error))
 })
 
-app.post('/restaurants/:id/delete', (req, res) => {
-  const id = req.params.id
-  return Restaurant.findById(id)
-    .then(restaurant => restaurant.remove())
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
 // add Delete restaurant
-app.post('/restaurants/:id/delete', (req, res) => {
+// app.delete('/restaurants/:id', (req, res) => {
+//   const id = req.params.id
+//   return Restaurant.findById(id)
+//     .then(restaurant => restaurant.remove())
+//     .then(() => res.redirect('/'))
+//     .catch(error => console.log(error))
+// })
+
+app.delete('/restaurants/:id', (req, res) => {
   const id = req.params.id
-  return Restaurant.findById(id)
-    .then(restaurant => restaurant.remove())
+  return Restaurant.findByIdAndDelete(id)
     .then(() => res.redirect('/'))
     .catch(error => console.log(error))
 })

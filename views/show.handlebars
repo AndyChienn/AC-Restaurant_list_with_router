@@ -41,7 +41,7 @@
   <div class=" d-flex justify-content-center flex-wrap">
     <a href="/restaurants/{{restaurant._id}}/edit"><button class="btn btn-link btn">Edit</button></a>
     <a href="/"><button class="btn btn-link btn">Back</button></a>
-    <form action="/restaurants/{{restaurant._id}}/delete" method="POST">
+    <form action="/restaurants/{{restaurant._id}}?_method=DELETE" method="POST">
       <button type="submit" class="btn btn-danger btn text-white">delete</button>
     </form>
   </div>
