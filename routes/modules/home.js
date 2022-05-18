@@ -7,9 +7,10 @@ const Restaurant = require('../../models/Restaurant')
 // render indexed.hbs
 
 router.get('/', (req, res) => {
+  const sortKey = req.query.sort || 'name'
   Restaurant.find({})
     .lean()
-    .sort({ _id: 'asc' })
+    .sort(sortKey)
     .then(restaurants => res.render('index', { restaurants }))
     .catch(error => console.log(error))
 })
@@ -18,6 +19,7 @@ router.get('/', (req, res) => {
 
 router.get('/search', (req, res) => {
   const keyword = req.query.keyword.trim()
+  const sortKey = req.query.sort || 'name'
   // $regex 提供了在查詢 (query) 中找到符合的字串
   // $options: 'i' 代表大小寫皆可
   // $or 代表任一條件符合皆可
@@ -29,6 +31,7 @@ router.get('/search', (req, res) => {
     ]
   })
     .lean()
+    .sort(sortKey)
     .then(restaurants => res.render('index', { restaurants, keyword }))
     .catch(error => console.log(error))
 })
