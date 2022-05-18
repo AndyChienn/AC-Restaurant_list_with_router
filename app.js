@@ -3,11 +3,11 @@ const app = express()
 const port = 3000
 
 const exphbs = require('express-handlebars')
-const { redirect } = require('express/lib/response')
+// const { redirect } = require('express/lib/response')
 const mongoose = require('mongoose')
 const db = mongoose.connection
 const methodOverride = require('method-override')
-
+const routes = require('./routes')
 const Restaurant = require('./models/Restaurant')
 const bodyParser = require('body-parser')
 const urlencoded = require('body-parser/lib/types/urlencoded')
@@ -19,7 +19,8 @@ app.use(methodOverride('_method'))
 
 app.use(bodyParser.urlencoded({ extended: true }))
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-
+// 設定路由
+app.use(routes)
 
 db.on('error', () => {
   console.log('mongodb error!')
@@ -29,101 +30,6 @@ db.once('open', () => {
   console.log('mongodb connected!')
 })
 
-
-
-
-// render indexed.hbs
-
-app.get('/', (req, res) => {
-  Restaurant.find({})
-    .lean()
-    .then(restaurants => res.render('index', { restaurants }))
-    .then(console.log('index rendered!'))
-    .catch(error => console.log(error))
-})
-
-// add Create restaurant
-app.get('/restaurants/new', (req, res) => {
-  res.render('new')
-})
-
-app.post('/restaurants', (req, res) => {
-  const body = req.body
-  return Restaurant.create(body)
-    .then(console.log('new restaurant added,req.body', body))
-    .then(() => res.redirect('/'))
-    .catch(err => console.log(err))
-})
-
-// add Read restaurant
-
-app.get('/restaurants/:id', (req, res) => {
-  const id = req.params.id
-  return Restaurant.findById(id)
-    .lean()
-    .then(restaurant => res.render('show', { restaurant }))
-    .then(console.log('show restaurant detail!'))
-    .catch(err => console.log(err))
-})
-
-// add Update restaurant
-app.get('/restaurants/:id/edit', (req, res) => {
-  const id = req.params.id
-  return Restaurant.findById(id)
-    .lean()
-    .then((restaurant) => res.render('edit', { restaurant }))
-    .catch(error => console.log(error))
-})
-
-
-// app.put('/restaurants/:id', (req, res) => {
-//   const id = req.params.id
-//   const { name, name_en, category, image, location, phone, google_map, rating, description } = req.body
-//   // console.log('body', body)
-//   return Restaurant.findById(id)
-//     .then((restaurant) => {
-//       restaurant.name = name
-//       restaurant.name_en = name_en
-//       restaurant.category = category
-//       restaurant.image = image
-//       restaurant.location = location
-//       restaurant.phone = phone
-//       restaurant.google_map = google_map
-//       restaurant.rating = rating
-//       restaurant.description = description
-//       // console.log('restaurantbody', restaurant.body)
-//       return restaurant.save()
-//     })
-//     .then(() => res.redirect(`/restaurants/${id}`))
-//     .catch(error => console.log(error))
-// })
-
-app.put('/restaurants/:id', (req, res) => {
-  const id = req.params.id
-  const { name, name_en, category, image, location, phone, google_map, rating, description } = req.body
-  // console.log('body', body)
-  return Restaurant.findByIdAndUpdate(id, req.body)
-    .then(() => {
-      res.redirect(`/restaurants/${id}`)
-    })
-    .catch(error => console.error(error))
-})
-
-// add Delete restaurant
-// app.delete('/restaurants/:id', (req, res) => {
-//   const id = req.params.id
-//   return Restaurant.findById(id)
-//     .then(restaurant => restaurant.remove())
-//     .then(() => res.redirect('/'))
-//     .catch(error => console.log(error))
-// })
-
-app.delete('/restaurants/:id', (req, res) => {
-  const id = req.params.id
-  return Restaurant.findByIdAndDelete(id)
-    .then(() => res.redirect('/'))
-    .catch(error => console.log(error))
-})
 
 // add Search function
 app.get('/search', (req, res) => {
