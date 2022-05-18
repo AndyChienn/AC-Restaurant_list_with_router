@@ -20,14 +20,12 @@
             Dropdown button
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item" href="{{#if keyword}}/search/?keyword={{keyword}}&{{else}}?{{/if}}sort=name">A -
+            <a class="dropdown-item" href="{{#if keyword}}/search/?keyword={{keyword}} {{/if}}sort=name">A -
               Z</a>
-            <a class="dropdown-item" href="{{#if keyword}}/search/?keyword={{keyword}}&{{else}}?{{/if}}sort=-name">Z -
+            <a class="dropdown-item" href="{{#if keyword}}/search/?keyword={{keyword}} {{/if}}sort=-name">Z -
               A</a>
-            <a class="dropdown-item"
-              href="{{#if keyword}}/search/?keyword={{keyword}}&{{else}}?{{/if}}sort=category">類別</a>
-            <a class="dropdown-item"
-              href="{{#if keyword}}/search/?keyword={{keyword}}&{{else}}?{{/if}}sort=location">地區</a>
+            <a class="dropdown-item" href="{{#if keyword}}/search/?keyword={{keyword}} {{/if}}sort=category">類別</a>
+            <a class="dropdown-item" href="{{#if keyword}}/search/?keyword={{keyword}} {{/if}}sort=location">地區</a>
           </div>
         </div>
       </div>
