@@ -19,20 +19,7 @@ app.use(express.static('public'))
 // 設定路由
 app.use(routes)
 
-// add Search function
-app.get('/search', (req, res) => {
-  const keyword = req.query.keyword.trim().toLowerCase()
-  console.log('keyword', keyword)
-  Restaurant.find({})
-    .lean()
-    .then((restaurants) => {
-      const searchedRestaurant = restaurants.filter(restaurant => {
-        return restaurant.name.toLowerCase().includes(keyword) || restaurant.category.includes(keyword)
-      })
-      res.render('index', { restaurants: searchedRestaurant, keyword })
-    })
-    .catch(error => console.log(error))
-})
+
 // 設定 port 3000
 app.listen(port, () => {
   console.log(`Express is listening on http://localhost:${port}`)
