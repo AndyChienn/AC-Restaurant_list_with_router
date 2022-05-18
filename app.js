@@ -1,35 +1,23 @@
 const express = require('express')
+const exphbs = require('express-handlebars')
+const bodyParser = require('body-parser')
+const methodOverride = require('method-override')
+
+const routes = require('./routes')
+require('./config/mongoose')
+
 const app = express()
 const port = 3000
-
-const exphbs = require('express-handlebars')
-// const { redirect } = require('express/lib/response')
-const mongoose = require('mongoose')
-const db = mongoose.connection
-const methodOverride = require('method-override')
-const routes = require('./routes')
-const Restaurant = require('./models/Restaurant')
-const bodyParser = require('body-parser')
-const urlencoded = require('body-parser/lib/types/urlencoded')
+// const { redirect } = require('express/lib/response')突然自己冒出
+// const urlencoded = require('body-parser/lib/types/urlencoded')突然自己冒出
 
 app.engine('handlebars', exphbs({ defaultLayout: 'main' }))
 app.set('view engine', 'handlebars')
-app.use(express.static('public'))
 app.use(methodOverride('_method'))
-
 app.use(bodyParser.urlencoded({ extended: true }))
-mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+app.use(express.static('public'))
 // 設定路由
 app.use(routes)
-
-db.on('error', () => {
-  console.log('mongodb error!')
-})
-// 連線成功
-db.once('open', () => {
-  console.log('mongodb connected!')
-})
-
 
 // add Search function
 app.get('/search', (req, res) => {
@@ -45,7 +33,7 @@ app.get('/search', (req, res) => {
     })
     .catch(error => console.log(error))
 })
-
+// 設定 port 3000
 app.listen(port, () => {
   console.log(`Express is listening on http://localhost:${port}`)
 })
