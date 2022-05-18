@@ -8,4 +8,6 @@ db.once('open', () => {
       console.log('MongoDB restaurantSeeder created!')
     })
     .catch(error => console.log(error))
+    .finally(() => db.close())
+
 })
